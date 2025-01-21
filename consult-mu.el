@@ -774,8 +774,8 @@ If MSGID is non-nil, put the cursor on message with MSGID.
             (erase-buffer)
             (mu4e-headers-mode)
             (setq-local mu4e-view-buffer-name consult-mu-view-buffer-name)
-            (if view-buffer
-                (setq-local mu4e~headers-view-win (mu4e-display-buffer gnus-article-buffer nil)))
+            ;; (if view-buffer
+            ;;     (setq-local mu4e~headers-view-win (mu4e-display-buffer gnus-article-buffer nil)))
             (unless ignore-history
                                         ; save the old present query to the history list
               (when mu4e--search-last-query
