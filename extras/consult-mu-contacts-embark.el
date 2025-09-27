@@ -6,7 +6,7 @@
 ;; Maintainer: Armin Darvish
 ;; Created: 2023
 ;; Version: 1.0
-;; Package-Requires: ((emacs "28.0") (consult "20250114"))
+;; Package-Requires: ((emacs "28.0") (consult "2.0"))
 ;; Homepage: https://github.com/armindarvish/consult-mu
 ;; Keywords: convenience, matching, tools, email
 ;; Homepage: https://github.com/armindarvish/consult-mu
@@ -41,53 +41,53 @@
 ;;; Code:
 
 ;;; Requirements
+
 (require 'embark)
 (require 'consult-mu)
 (require 'consult-mu-embark)
 
 (defun consult-mu-contacts-embark-insert-email (cand)
-  "Embark function for inserting contact's email."
+  "Embark function for inserting CAND's email."
   (let* ((contact (get-text-property 0 :contact cand))
          (email (plist-get contact :email)))
-     (insert (concat email "; "))))
+    (insert (concat email consult-mu-contacts-email-separator " "))))
 
 (defun consult-mu-contacts-embark-kill-email (cand)
-  "Embark function for copying contact's email."
+  "Embark function for copying CAND's email."
   (let* ((contact (get-text-property 0 :contact cand))
          (email (plist-get contact :email)))
-     (kill-new email)))
+    (kill-new email)))
 
 (defun consult-mu-contacts-embark-get-alternative (cand)
-  "Embark function for copying contact's email."
+  "Embark function for copying CAND's email."
   (let* ((contact (get-text-property 0 :contact cand))
          (name (string-trim (plist-get contact :name)))
          (email (plist-get contact :email))
          (user (string-trim (replace-regexp-in-string "@.*" "" email))))
-     (consult-mu-contacts (cond
-                           ((not (string-empty-p name))
-                            name)
-                           ((not (string-empty-p user))
-                            user)
-                           ((t ""))))))
+    (consult-mu-contacts (cond
+                          ((not (string-empty-p name))
+                           name)
+                          ((not (string-empty-p user))
+                           user)
+                          ((t ""))))))
 
 (defun consult-mu-contacts-embark-compose (cand)
-  "Embark function for `consult-mu-contacts--compose-to'."
+  "Embark function for composing an email to CAND."
   (let* ((contact (get-text-property 0 :contact cand)))
-     (consult-mu-contacts--compose-to contact)))
+    (consult-mu-contacts--compose-to contact)))
 
 (defun consult-mu-contacts-embark-search-messages (cand)
   "Embark function for searching messages from CAND using `consult-mu'."
   (let* ((contact (get-text-property 0 :contact cand))
          (email (plist-get contact :email)))
-     (consult-mu (concat "from:" email))))
+    (consult-mu (concat "from:" email))))
 
 (defun consult-mu-contacts-embark-default-action (cand)
-  "Run `consult-mu-contacts-action' on the candidate."
+  "Run `consult-mu-contacts-action' on CAND."
   (let* ((contact (get-text-property 0 :contact cand))
          (query (get-text-property 0 :query cand))
          (newcand (cons cand `(:contact ,contact :query ,query))))
-    (funcall #'consult-mu-contacts--insert-email-action newcand))
-  )
+    (funcall #'consult-mu-contacts--insert-email-action newcand)))
 
 ;;; Define Embark Keymaps
 (defvar-keymap consult-mu-embark-contacts-actions-map
@@ -97,8 +97,7 @@
   "s" #'consult-mu-contacts-embark-search-messages
   "i" #'consult-mu-contacts-embark-insert-email
   "w" #'consult-mu-contacts-embark-kill-email
-  "a" #'consult-mu-contacts-embark-get-alternative
-  )
+  "a" #'consult-mu-contacts-embark-get-alternative)
 
 
 (add-to-list 'embark-keymap-alist '(consult-mu-contacts . consult-mu-embark-contacts-actions-map))
@@ -110,4 +109,4 @@
 
 (provide 'consult-mu-contacts-embark)
 
-;;;  consult-mu-contacts-embark.el ends here
+;;; consult-mu-contacts-embark.el ends here
